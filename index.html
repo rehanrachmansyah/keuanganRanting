@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Kas Organisasi</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; }
+    h1 { text-align: center; }
+    form { display: flex; flex-direction: column; gap: 15px; }
+    input[type="text"] { padding: 8px; font-size: 16px; }
+    button { padding: 10px; font-size: 16px; cursor: pointer; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Form Kas Organisasi</h1>
+  <form id="kasForm">
+    <label>Nama Anggota:</label>
+    <input type="text" name="nama" required />
+    <label>
+      <input type="checkbox" name="ceklist" /> Setor 2000
+    </label>
+    <button type="submit">Submit</button>
+  </form>
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("kasForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        nama: formData.get("nama"),
+        ceklist: formData.get("ceklist") === "on"
+      };
+
+      try {
+        const res = await fetch("https://n8n.gitstraining.com/webhook-test/b7102fd6-158c-40a4-bf2f-82d9538e9cb9", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          status.textContent = "Data berhasil terkirim!";
+          status.className = "success";
+          form.reset();
+        } else {
+          throw new Error("Terjadi kesalahan saat mengirim data");
+        }
+      } catch (err) {
+        status.textContent = err.message;
+        status.className = "error";
+      }
+    });
+  </script>
+</body>
+</html>
