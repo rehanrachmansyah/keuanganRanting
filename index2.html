@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kas Organisasi</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; }
+    h1 { text-align: center; }
+    form { display: flex; flex-direction: column; gap: 15px; }
+    input[type="text"], button { padding: 10px; font-size: 16px; }
+    label { font-size: 16px; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Form Kas Organisasi</h1>
+  <form id="kasForm">
+    <label>Nama Anggota:</label>
+    <input type="text" name="nama" required />
+
+    <label>
+      <input type="checkbox" name="ceklist" /> Setor Rp 2.000
+    </label>
+
+    <button type="submit">Kirim</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("kasForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        nama: form.nama.value.trim(),
+        ceklist: form.ceklist.checked,
+        token: "rahasia123" // verifikasi sederhana di n8n
+      };
+
+      try {
+        const res = await fetch("https://YOUR_N8N_URL/webhook/kas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error("Gagal kirim data.");
+        status.textContent = "✅ Data berhasil dikirim!";
+        status.className = "success";
+        form.reset();
+      } catch (err) {
+        status.textContent = "❌ " + err.message;
+        status.className = "error";
+      }
+    });
+  </script>
+</body>
+</html>
