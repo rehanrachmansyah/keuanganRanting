@@ -1,21 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Input Kas Organisasi</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kas Organisasi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f8f8f8;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .anggota {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
 </head>
 <body>
-    <h1>Input Pembayaran Kas Rp2.000</h1>
-    <label for="bendahara">Nama Bendahara/Admin:</label>
-    <input type="text" id="bendahara" required><br><br>
+  <h1>Absensi Kas Harian</h1>
+  <form id="kasForm">
+    <p>Pilih anggota yang menyetor Rp 2.000 hari ini:</p>
 
-    <h2>Anggota yang Sudah Bayar (Ceklist)</h2>
-    <div id="anggota-list">Memuat daftar anggota...</div>
-    
-    <br>
-    <button onclick="kirimData()">Kirim Data Kas</button>
-    
-    <p id="status-pesan"></p>
+    <!-- Daftar nama anggota -->
+    <div class="anggota"><input type="checkbox" name="anggota" value="Rehan" /> Rehan</div>
+    <div class="anggota"><input type="checkbox" name="anggota" value="Budi" /> Budi</div>
+    <div class="anggota"><input type="checkbox" name="anggota" value="Sinta" /> Sinta</div>
+    <div class="anggota"><input type="checkbox" name="anggota" value="Dewi" /> Dewi</div>
 
-    <script src="script.js"></script>
+    <button type="submit">Kirim Data</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("kasForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Ambil semua nama yang dicentang
+      const selected = Array.from(document.querySelectorAll('input[name="anggota"]:checked'))
+        .map(cb => cb.value);
+
+      if (selected.length === 0) {
+        status.textContent = "❌ Harap pilih minimal satu anggota.";
+        status.className = "error";
+        return;
+      }
+
+      const data = {
+        anggota: selected,
+        token: "rahasia123" // token sederhana untuk keamanan
+      };
+
+      try {
+        const res = await fetch("https://n8n.gitstraining.com/webhook-test/552443c9-6480-4bad-b7a1-f9f2301b7149", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error("Gagal mengirim data ke server.");
+        status.textContent = "✅ Data berhasil dikirim!";
+        status.className = "success";
+        form.reset();
+      } catch (err) {
+        status.textContent = "❌ " + err.message;
+        status.className = "error";
+      }
+    });
+  </script>
 </body>
 </html>
