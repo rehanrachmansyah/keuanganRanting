@@ -4,66 +4,173 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kas Organisasi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f0f4fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      border-radius: 0;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 15px 10px;
+      background: #007bff;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px 20px 80px; /* extra bottom space for button */
+    }
+
+    p {
+      font-size: 15px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid #e1e7f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    label:hover {
+      background: #f5f9ff;
+      border-color: #007bff;
+    }
+
+    footer {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      padding: 15px 20px;
+      box-shadow: 0 -3px 10px rgba(0,0,0,0.08);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #005ecb;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 20px; }
+      button { font-size: 15px; }
+    }
+  </style>
 </head>
 <body>
-  <h2>Setor Kas</h2>
-
-  <form id="kasForm">
-    <div id="anggotaList">
-      <label><input type="checkbox" name="anggota" value="Rehan"> Rehan</label><br>
-      <label><input type="checkbox" name="anggota" value="Budi"> Budi</label><br>
-      <label><input type="checkbox" name="anggota" value="Sinta"> Sinta</label><br>
-      <label><input type="checkbox" name="anggota" value="Dewi"> Dewi</label><br>
-    </div>
-
-    <button type="submit">Kirim</button>
-  </form>
-
-  <hr>
-
-  <h3>Tambah Anggota Baru</h3>
-  <input type="text" id="namaBaru" placeholder="Nama baru">
-  <button id="tambahBtn">Tambah</button>
+  <div class="card">
+    <h1>Form Kas Harian</h1>
+    <form id="kasForm">
+      <p>Centang anggota yang setor Rp 2.000 hari ini:</p>
+  
+      <label><input type="checkbox" name="anggota" value="Rehan" /> Rehan</label>
+      <label><input type="checkbox" name="anggota" value="Budi" /> Budi</label>
+      <label><input type="checkbox" name="anggota" value="Sinta" /> Sinta</label>
+      <label><input type="checkbox" name="anggota" value="Dewi" /> Dewi</label>
+      <label><input type="checkbox" name="anggota" value="Fitri" /> Fitri</label>
+      <label><input type="checkbox" name="anggota" value="Popol" /> Popol</label>
+  
+      <button type="submit">Kirim</button>
+    </form>
+  
+    <p id="status"></p>
+  </div>
 
   <script>
-    const anggotaList = document.getElementById("anggotaList");
+    const form = document.getElementById("kasForm");
+    const status = document.getElementById("status");
 
-    // Tambahkan anggota baru di tampilan
-    document.getElementById("tambahBtn").addEventListener("click", async () => {
-      const nama = document.getElementById("namaBaru").value.trim();
-      if (!nama) return alert("Masukkan nama!");
-
-      // Tambah ke interface
-      const label = document.createElement("label");
-      label.innerHTML = `<input type="checkbox" name="anggota" value="${nama}"> ${nama}`;
-      anggotaList.appendChild(label);
-      anggotaList.appendChild(document.createElement("br"));
-
-      // Kirim nama baru ke n8n
-      await fetch("https://n8n.gitstraining.com/webhook/552443c9-6480-4bad-b7a1-f9f2301b7149", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ namaBaru: nama })
-      });
-
-      alert(`Anggota ${nama} ditambahkan!`);
-      document.getElementById("namaBaru").value = "";
-    });
-
-    // Kirim daftar yang dicentang
-    document.getElementById("kasForm").addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const data = new FormData(e.target);
-      const anggota = data.getAll("anggota");
 
-      await fetch("https://n8n.gitstraining.com/webhook/552443c9-6480-4bad-b7a1-f9f2301b7149", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ anggota })
-      });
+      const selected = Array.from(document.querySelectorAll('input[name="anggota"]:checked'))
+        .map(cb => cb.value);
 
-      alert("Data kas berhasil dikirim!");
-      e.target.reset();
+      if (selected.length === 0) {
+        status.textContent = "❌ Harap pilih minimal satu anggota.";
+        status.className = "error";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://n8n.gitstraining.com/webhook/552443c9-6480-4bad-b7a1-f9f2301b7149", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ anggota: selected })
+        });
+
+        if (!res.ok) throw new Error("Gagal mengirim data.");
+        status.textContent = "✅ Data berhasil dikirim!";
+        status.className = "success";
+        form.reset();
+      } catch (err) {
+        status.textContent = "❌ " + err.message;
+        status.className = "error";
+      }
     });
   </script>
 </body>
