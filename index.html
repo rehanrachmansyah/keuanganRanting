@@ -123,21 +123,28 @@
 </head>
 <body>
   <div class="card">
-    <h1>Form Kas Harian</h1>
-    <form id="kasForm">
+    <header>
+      <h1>Form Kas Harian</h1>
       <p>Centang anggota yang setor Rp 2.000 hari ini:</p>
-  
-      <label><input type="checkbox" name="anggota" value="Rehan" /> Rehan</label>
-      <label><input type="checkbox" name="anggota" value="Budi" /> Budi</label>
-      <label><input type="checkbox" name="anggota" value="Sinta" /> Sinta</label>
-      <label><input type="checkbox" name="anggota" value="Dewi" /> Dewi</label>
-      <label><input type="checkbox" name="anggota" value="Fitri" /> Fitri</label>
-      <label><input type="checkbox" name="anggota" value="Popol" /> Popol</label>
-  
-      <button type="submit">Kirim</button>
-    </form>
-  
-    <p id="status"></p>
+    </header>
+    <main>
+      <form id="kasForm">
+    
+        <label><input type="checkbox" name="anggota" value="Rehan" /> Rehan</label>
+        <label><input type="checkbox" name="anggota" value="Budi" /> Budi</label>
+        <label><input type="checkbox" name="anggota" value="Sinta" /> Sinta</label>
+        <label><input type="checkbox" name="anggota" value="Dewi" /> Dewi</label>
+        <label><input type="checkbox" name="anggota" value="Fitri" /> Fitri</label>
+        <label><input type="checkbox" name="anggota" value="Popol" /> Popol</label>
+    
+        <button type="submit">Kirim</button>
+      </form>
+    
+      <p id="status"></p>
+      </main>
+    <footer>
+      <button type="submit" form="kasForm">Kirim</button>
+    </footer>
   </div>
 
   <script>
